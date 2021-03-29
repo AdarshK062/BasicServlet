@@ -1,0 +1,34 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>User Data</title>
+</head>
+<body>
+<%@ page import="BasicServlet.*" %>
+<%
+HttpSession s= request.getSession(true);
+Employee emp=(Employee) s.getAttribute("emp");
+DBConnect db=(DBConnect)s.getAttribute("db");
+%>
+<h3>USER DETAILS</h3>
+<br>
+<b>persno : </b> <%= emp.persno%><br>
+<b>name : </b> <%= emp.name %><br>
+<b>designation : </b> <%= emp.designation %><br>
+<b>division : </b> <%= emp.division %><br>
+<br>
+<br>
+<br>
+<form action="index2.jsp" method="post">
+<input type="submit" value="Add"/>
+</form>
+<form action="index3.jsp" method="post">
+<input type="submit" value="Update"/>
+</form><form action="index4.jsp" method="post">
+<input type="submit" value="Delete"/>
+</form>
+</body>
+</html>

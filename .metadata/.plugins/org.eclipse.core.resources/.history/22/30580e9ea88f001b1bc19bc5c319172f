@@ -1,0 +1,31 @@
+package BasicServlet;
+
+import java.sql.*;
+
+public class DBConnect {
+	Connection dbConnection;
+	String Employee="Employee";
+	String MPR_WorkProgress="MPR_WorkProgress";
+	String MPR_FabricationVisits="MPR_FabricationVisits";
+	
+	public DBConnect(){
+		try{
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			dbConnection=DriverManager.getConnection(
+					"jdbc:oracle:thin:@localhost:1521:xe","adarsh","1501");
+			} catch(Exception e){ 
+				System.out.println(e);
+			} 
+	}
+	
+	public void AddWorkProgress(WorkProgress wpr){
+		
+	}
+	public void End(){
+		try {
+			dbConnection.close();
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+	}
+}

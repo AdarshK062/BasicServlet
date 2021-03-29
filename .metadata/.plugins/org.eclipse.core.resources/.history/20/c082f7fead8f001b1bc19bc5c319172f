@@ -1,0 +1,47 @@
+package BasicServlet;
+
+import java.sql.*;
+
+public class DBConnect {
+	Connection dbConnection;
+	Statement statement;
+	String Employee="Employee";
+	String MPR_WorkProgress="MPR_WorkProgress";
+	String MPR_FabricationVisits="MPR_FabricationVisits";
+	String Project="Project";
+	public DBConnect(){
+		try{
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			dbConnection=DriverManager.getConnection(
+					"jdbc:oracle:thin:@localhost:1521:xe","adarsh","1501");
+			statement=dbConnection.createStatement();
+			} catch(Exception e){ 
+				System.out.println(e);
+			} 
+	}
+	
+	public void AddWorkProgress(WorkProgress wpr){
+		String query1= "INSERT INTO " + MPR_WorkProgress + "VALUES(" + 
+				wpr.persno + "," + 
+				"TO_DATE(" + wpr.wpDate + "," + "'mm/dd/yyyy')" + "," +
+				wpr.status + "," + 
+				"TO_DATE(" + wpr.PDC + "," + "'mm/dd/yyyy'))";
+		String query2= "INSERT INTO " + Project + "VALUES(" + 
+				wpr.projectId + "," + 
+				wpr.projectName + "," + 
+				wpr.projectDescription + ")";
+		try {
+			statement.executeUpdate(query1);
+			statement.executeUpdate(query2);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public void End(){
+		try {
+			dbConnection.close();
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+	}
+}

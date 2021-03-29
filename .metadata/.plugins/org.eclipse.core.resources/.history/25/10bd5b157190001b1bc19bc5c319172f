@@ -1,0 +1,75 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<style>
+.table { display: table; } 
+.table>* { display: table-row; }
+.table>*>* { display: table-cell; }
+.div-table {
+  display: table;         
+  width: auto;         
+  background-color: #eee;         
+  border: 1px solid #666666;         
+  border-spacing: 5px; /* cellspacing:poor IE support for  this */
+}
+.div-table-row {
+  display: table-row;
+  width: auto;
+  clear: both;
+}
+.div-table-col {
+  float: left; /* fix for  buggy browsers */
+  display: table-column;         
+  width: 150px;         
+  background-color: #ccc;  
+}
+</style>
+</head>
+<body>
+<%@ page import="BasicServlet.*" %>
+<%@ page import="java.sql.*" %>
+<%
+HttpSession s= request.getSession(true);
+Employee emp=(Employee) s.getAttribute("emp");
+DBConnect db=(DBConnect)s.getAttribute("db");
+String month=request.getParameter("month");
+ResultSet res=db.DisplayData(month);
+int i=1;
+%>
+<div class="div-table" id="dataTable">
+			<div class="div-table-row">
+				<div class="div-table-col">Sr.<br> No.</div>
+				<div class="div-table-col">Project ID</div>
+				<div class="div-table-col">Project Name</div>
+				<div class="div-table-col">Project Description</div>
+				<div class="div-table-col">WP Date</div>
+				<div class="div-table-col">Status</div>
+				<div class="div-table-col">PDC</div>
+				<div class="div-table-col"></div>
+				<div class="div-table-col"></div>
+			</div>
+			<%while(res.next()){ %>
+			<div class="div-table-row">
+			<form action="UpdateServlet" method="post">
+				<div class="div-table-col"><%=i %></div>
+				<div class="div-table-col"><input type="text" value=<%=res.getString("project_Id") %> name="projectId1"></div>
+				<div class="div-table-col"><input type="text" value=<%=res.getString("project_Name") %> name="projectName1"></div>
+				<div class="div-table-col"><input type="text" value=<%=res.getString("Description") %> name="projectDesc1"></div>
+				<div class="div-table-col"><%=res.getString("WP_Date") %></div>
+				<div class="div-table-col"><input type="text" value=<%=res.getString("status") %> name="status1"></div>
+				<div class="div-table-col"><input type="date" value=<%=res.getString("PDC") %> name="PDC1"></div>
+				<div class="div-table-col"><input type="button" name="button1" value="Delete" onclick="removeRow('button1')"></div>
+				<div class="div-table-col"><input type="submit" value="Save"/></div>
+			</form>
+			</div>
+			<%i++; %>
+			<%} %>
+		</div>
+		<input type="submit" value="save"/>
+		<INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />
+</body>
+</html>

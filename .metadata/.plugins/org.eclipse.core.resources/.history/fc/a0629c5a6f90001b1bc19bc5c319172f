@@ -1,0 +1,57 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<style>
+.table { display: table; } 
+.table>* { display: table-row; }
+.table>*>* { display: table-cell; }
+</style>
+</head>
+<body>
+<%@ page import="BasicServlet.*" %>
+<%@ page import="java.sql.*" %>
+<%
+HttpSession s= request.getSession(true);
+Employee emp=(Employee) s.getAttribute("emp");
+DBConnect db=(DBConnect)s.getAttribute("db");
+String month=request.getParameter("month");
+ResultSet res=db.DisplayData(month);
+int i=1;
+%>
+<div class="table" id="dataTable">
+			<div>
+				<p>Sr.<br> No.</p>
+				<p>Project ID</p>
+				<p>Project Name</p>
+				<p>Project Description</p>
+				<p>WP Date</p>
+				<p>Status</p>
+				<p>PDC</p>
+				<p></p>
+				<p></p>
+			</div>
+			<%while(res.next()){ %>
+			<div>
+			<form action="UpdateServlet" method="post">
+				<p><%=i %></p>
+				<input type="text" value=<%=res.getString("projectId") %> name="projectId1">
+				<input type="text" value=<%=res.getString("projectName") %> name="projectName1">
+				<input type="text" value=<%=res.getString("projectDesc") %> name="projectDesc1">
+				<p><%=res.getString("WPDate") %></p>
+				<input type="text" value=<%=res.getString("status") %> name="status1">
+				<input type="date" value=<%=res.getString("PDC") %> name="PDC1">
+				<input type="button" name="button1" value="Delete" onclick="removeRow('button1')">
+				<input type="submit" value="Save"/>
+			</form>
+			</div>
+			<%i++; %>
+			<%} %>
+		</div>
+		<input type="submit" value="save"/>
+		<INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />
+</body>
+</html>
