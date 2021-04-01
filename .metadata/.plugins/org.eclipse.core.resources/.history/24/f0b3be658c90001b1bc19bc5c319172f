@@ -1,0 +1,94 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<style>
+.table { display: table; } 
+.table>* { display: table-row; }
+.table>*>* { display: table-cell; }
+.div-table {
+  display: table;         
+  width: auto;                 
+  border: 2px solid #666666;
+}
+.div-table-row {
+  display: table-row;
+  width: auto;
+  clear: both;
+}
+.div-table-col {
+margin: 2px;
+text-align: center;
+border:2px solid #666666;
+  float: left;
+  display: table-column;         
+  width: 200px;
+  height:30px;          
+}
+</style>
+</head>
+<body>
+<%@ page import="BasicServlet.*" %>
+<%@ page import="java.sql.*" %>
+<%
+HttpSession s= request.getSession(true);
+Employee emp=(Employee) s.getAttribute("emp");
+DBConnect db=(DBConnect)s.getAttribute("db");
+String month=request.getParameter("start");
+ResultSet res=db.DisplayData(month);
+int i=1;
+%>
+
+
+<script>
+function update(i){
+	console.log(i);
+	document.getElementById('upd'+i).style.display="none";
+	document.getElementById('sub'+i).show();
+}
+</script>
+
+
+<div class="div-table" id="dataTable">
+			<div class="div-table-row">
+				<div class="div-table-col" style="width:60px">Sr. No.</div>
+				<div class="div-table-col">Project ID</div>
+				<div class="div-table-col">Project Name</div>
+				<div class="div-table-col">Project Description</div>
+				<div class="div-table-col">WP Date</div>
+				<div class="div-table-col">Status</div>
+				<div class="div-table-col">PDC</div>
+				<div class="div-table-col" style="width:60px"></div>
+				<div class="div-table-col" style="width:60px"></div>
+			</div>
+			<%while(res!=null && res.next()){ %>
+			<div class="div-table-row">
+			<form action="UpdateServlet" method="post">
+				<div class="div-table-col" style="width:60px"><%=i %></div>
+				<div class="div-table-col"><%=res.getString("project_Id") %></div>
+				<div class="div-table-col"><%=res.getString("project_Name") %><input type="text"  style="display: none;"value=<%=res.getString("project_Name") %> name="projectName"></div>
+				<div class="div-table-col"><%=res.getString("Description") %><input type="text"  style="display: none;"value=<%=res.getString("Description") %> name="projectDesc"></div>
+				<div class="div-table-col"><%=res.getString("wpd") %></div>
+				<div class="div-table-col"><%=res.getString("status") %><input type="text"style="display: none;" value=<%=res.getString("status") %> name="status"></div>
+				<div class="div-table-col"><%=res.getString("PDC") %><input type="date" style="display: none;"value=<%=res.getString("PDC") %> name="PDC"></div>
+				<div class="div-table-col" style="width:60px">
+				<input type="button" onclick="update('<%=i %>')" id="upd<%=i %>" value="Update"/>
+				<input type="submit" style="display: none;" id="sub<%=i %>" value="Save"/></div>
+				</form>
+				<form action="DeleteServlet" method="post">
+				<div class="div-table-col" style="width:60px">
+				<input type="hidden" value="<%=res.getString("project_Id") %>" name="projectId"/>
+				<input type="hidden" value="<%=res.getString("wpd") %>" name="wpd"/>
+				<input type="hidden" value="<%=emp.persno %>" name="persno"/>
+				<input type="submit" value="Delete"></div>
+				</form>
+			</div>
+			<%i++; %>
+			<%} %>
+		</div>
+		<input type="submit" value="save"/>
+</body>
+</html>

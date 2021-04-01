@@ -1,0 +1,10 @@
+package BasicServlet;
+
+public class Project {
+	String projectId, projectName, projectDescription;
+	public Project(String projectId, String projectName, String projectDescription) {
+		this.projectId=projectId;
+		this.projectName=projectName;
+		this.projectDescription=projectDescription;
+	}
+}
