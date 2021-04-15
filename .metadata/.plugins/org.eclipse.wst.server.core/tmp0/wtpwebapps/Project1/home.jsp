@@ -53,19 +53,6 @@ body{
 			padding: 15px;
 		}
 
-/* .container-table100 {
-  width: 100%;
-  background: #c850c0;
-  background: -webkit-linear-gradient(45deg, #4158d0, #c850c0);
-  background: -o-linear-gradient(45deg, #4158d0, #c850c0);
-  background: -moz-linear-gradient(45deg, #4158d0, #c850c0);
-  background: linear-gradient(45deg, #4158d0, #c850c0); 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: 33px 30px;
-} */
 
 
 table thead tr {
@@ -118,7 +105,31 @@ tbody tr:nth-child(even) {
   from {bottom: 30px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 }
-		
+
+ul {
+  list-style: none;
+}
+
+ul li::before {
+  content: "\2022";
+  color: red;
+  font-weight: bold;
+  display: inline-block; 
+  width: 1em;
+  margin-left: -1em;
+font-size: 25px;
+}
+
+li button {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	cursor:pointer;
+	outline: inherit;
+  margin-bottom: 2%;
+  font-size: 17px;
+}
 
 </style>
 </head>
@@ -128,24 +139,104 @@ tbody tr:nth-child(even) {
 <%
 HttpSession s= request.getSession(true);
 Employee emp=(Employee) s.getAttribute("emp");
-DBConnect db=(DBConnect)s.getAttribute("db");
-ResultSet res=db.GetProgress(emp.persno);
-ResultSet res1=db.GetVisits(emp.persno);
+
+DNET DNet=new DNET();
+Connection dbConnection=DNet.getConnection();
+PreparedStatement pStatement;
+if(request.getParameter("addWork")!=null){
+	WorkProgress wpr=null;
+	int i=1;
+	String projectId=request.getParameter("projectId"+i);
+	while(projectId!=null) {
+		String projectName=request.getParameter("projectName"+i);
+		String projectDesc=request.getParameter("projectDesc"+i);
+		String WPDate=request.getParameter("WPDate"+i);
+		String status=request.getParameter("status"+i);
+		String PDC=request.getParameter("PDC"+i);
+		wpr=new WorkProgress(emp.persno,WPDate,projectId,projectName,projectDesc,status,PDC);
+		try {
+			pStatement=dbConnection.prepareStatement("INSERT INTO "+DNet.MPR_WorkProgress+" VALUES(?,TO_DATE(?,'YYYY/MM/DD'),?,?,TO_DATE(?,'YYYY/MM/DD'))");
+			pStatement.setString(1,wpr.persno)
+;			pStatement.setString(2, wpr.wpDate);
+			pStatement.setString(3,wpr.projectId);
+			pStatement.setString(4,wpr.status);
+			pStatement.setString(5,wpr.PDC);
+			pStatement.executeUpdate();
+			pStatement=dbConnection.prepareStatement("INSERT INTO "+DNet.Project+" VALUES(?,?,?)");
+			pStatement.setString(1,wpr.projectId);
+			pStatement.setString(2,wpr.projectName);
+			pStatement.setString(3,wpr.projectDescription);
+			pStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		i++;
+		projectId=request.getParameter("projectId"+i);
+	}
+}
+if(request.getParameter("addVisit")!=null){
+	Fabrication fb=null;
+	int i=1;
+	String name=request.getParameter("name"+i);
+	while(name!=null) {
+		String date=request.getParameter("date"+i);
+		String purpose=request.getParameter("purpose"+i);
+		fb=new Fabrication(emp.persno,date,name,purpose);
+		try {
+			pStatement=dbConnection.prepareStatement("INSERT INTO "+DNet.MPR_FabricationVisits+" VALUES(?,TO_DATE(?,'YYYY/MM/DD'),?,?)");
+			pStatement.setString(1,fb.persno);
+			pStatement.setString(2,fb.visitDate);
+			pStatement.setString(3,fb.industry);
+			pStatement.setString(4,fb.purpose);
+			pStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		i++;
+		name=request.getParameter("name"+i);
+	}
+}
+ResultSet res=null;
+try {
+	pStatement=dbConnection.prepareStatement("SELECT W.PROJECT_ID as pid, P.PROJECT_NAME as pname, TO_CHAR(w.WP_Date, 'dd/mm/yyyy') as wpd, W.STATUS as status FROM "+DNet.Project+" P, "+DNet.MPR_WorkProgress+" W WHERE P.PROJECT_ID=W.PROJECT_ID AND W.F_CPERSNO=? ORDER BY W.WP_DATE");
+	pStatement.setString(1, emp.persno);
+	res=pStatement.executeQuery();
+} catch (SQLException e) {
+	e.printStackTrace();
+}
+
+ResultSet res1=null;
+try {
+	pStatement=dbConnection.prepareStatement("SELECT INDUSTRY as ind, TO_CHAR(VISIT_DATE, 'dd/mm/yyyy') as vd, PURPOSE as pur FROM "+DNet.MPR_FabricationVisits+" WHERE F_CPERSNO=? ORDER BY VISIT_DATE");
+	pStatement.setString(1, emp.persno);
+	res1=pStatement.executeQuery();
+} catch (SQLException e) {
+	e.printStackTrace();
+}
+
 int i=1,j=1;
 %>
 <script>
 	function myFunction() {
 		if(document.getElementById("toast")!=null){
 			var x = document.getElementById("snackbar");
-			  x.className = "show";
-			  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-		  }
-		  if(document.getElementById("toast1")!=null){
-			var x = document.getElementById("snackbar1");
-			  x.className = "show";
-			  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-		  }
+			x.className = "show";
+			setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 		}
+		if(document.getElementById("toast1")!=null){
+			var x = document.getElementById("snackbar1");
+			x.className = "show";
+			setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+		}
+	}
+	function options(x){
+		var element=document.getElementById('display');
+		if(element.style.display='none'){
+			element.style.display='block';
+		}
+		element.innerHTML = document.getElementById(x).innerHTML;
+		// document.getElementById(x).style.display='block';
+	}
 	</script>
 <div style="display: flex;">
 <div class="card" style="width: 15%;float:left;">
@@ -191,8 +282,27 @@ int i=1,j=1;
 
 <div style="clear: both;"></div>
 </div>
+<div>
 
-<div class="card" style="width:81%;height: auto; overflow:hidden;max-height:500px; float:left;">
+
+
+
+	<div class="card" style="width:16%;height: auto; max-height:800px; float:left;padding: 20px 20px;">
+		<fieldset style="height: 100%; overflow-y: auto;">
+			<legend style="font-weight: bold;font-size: large;">Options</legend>
+			<div>
+				<ul>
+					<li><button style="text-align: left;margin-left: 0.5px;" onclick="options('1')">Details of work in Progress</button></li>
+					<br>
+					<li><button style="text-align: left;margin-left: 0.5px;" onclick="options('2')">Visits to Fabrication agencies during the month</button></li>
+				</ul>
+			</div>
+		</fieldset>
+	</div>
+	<div class="card" id="display" style="width:70%;height: auto; max-height:800px; float:left;display:none;">
+	</div>
+
+<div class="card" id="1" style="width:70%;height: auto; max-height:800px; float:left;display:none;">
 	<fieldset style="height: 100%; overflow-y: auto;padding: 20px;">
 		<legend style="font-weight: bold;font-size: large;">Work in Progress</legend>
 		<div style="margin-bottom: 10px;">
@@ -228,11 +338,11 @@ int i=1,j=1;
 			</table>
 		</div>
 			<div style="display: flex;">
-				<form action="index2.jsp" method="post">
+				<form action="addWork.jsp" method="post">
 					<input type="submit" value="Add" />
 				</form>
 		
-				<form action="index3.jsp" method="post">
+				<form action="updWork.jsp" method="post">
 					<input type="submit" value="Update" />
 				</form>
 			</div>
@@ -241,7 +351,7 @@ int i=1,j=1;
 </div>
 
 
-<div class="card" style="width:81%;height: auto; overflow:hidden;max-height:500px; float:left;">
+<div class="card" id="2" style="width:70%;height: auto; max-height:800px; float:left;display:none;">
 	<fieldset style="height: 100%; overflow-y: auto;padding: 20px;">
 		<legend style="font-weight: bold;font-size: large;">Visits to Fabrication Agencies</legend>
 		<div style="margin-bottom: 10px;">
@@ -273,17 +383,24 @@ int i=1,j=1;
 			</table>
 		</div>
 			<div style="display: flex;">
-				<form action="index5.jsp" method="post">
+				<form action="addVisit.jsp" method="post">
 					<input type="submit" value="Add" />
 				</form>
 		
-				<form action="index6.jsp" method="post">
+				<form action="updVisit.jsp" method="post">
 					<input type="submit" value="Update" />
 				</form>
 			</div>
 		</div>
 	</fieldset>
 </div>
+
+
+
+
+
+</div>
+
 
 
 <div id="logout">
@@ -301,5 +418,6 @@ int i=1,j=1;
 <%if(s.getAttribute("update")!=null){%>
 <div id="toast1" style="display:none;"></div>
 <%s.setAttribute("update",null);}%>
+<% dbConnection.close(); %>
 </body>
 </html>

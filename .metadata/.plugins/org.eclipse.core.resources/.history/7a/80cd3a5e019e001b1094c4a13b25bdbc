@@ -1,0 +1,24 @@
+package BasicServlet;
+
+import java.sql.*;
+
+public class DNET {
+	
+	// All Table Names
+	public String Employee="Employee";
+	public String MPR_WorkProgress="MPR_WorkProgress";
+	public String MPR_FabricationVisits="MPR_FabricationVisits";
+	public String Project="Project";
+
+	// Connects to DB and Return connection object
+	public Connection getConnection() {
+		Connection dbConnection = null;
+		try{
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			dbConnection=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","adarsh","1501");
+		} catch(Exception e){ 
+			System.out.println(e);
+		}
+		return dbConnection;
+	}
+}
