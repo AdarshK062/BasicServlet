@@ -12,14 +12,15 @@
 	<%
 		String userId=request.getParameter("userId");
 		String password=request.getParameter("password");
+		String loginType=request.getParameter("loginType");
 		DNET DNet=new DNET();
-		Connection dbConnection=DNet.getConnection();
+		Connection dbConnection=DNet.getSurveyThinConnection();
 		Employee emp = null;
 		ResultSet result;
-		RequestDispatcher rd=request.getRequestDispatcher("index.jsp");
+		RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
 		PreparedStatement pStatement;
         try {
-			pStatement=dbConnection.prepareStatement("SELECT * FROM "+DNet.Employee+" WHERE USERID=? AND PASSWORD=?");
+			pStatement=dbConnection.prepareStatement("SELECT * FROM "+DNet.Employee+" E INNER JOIN "+DNet.Passwords+" P ON E.F_CPERSNO=P.F_CPERSNO WHERE P.USERID=? AND P.PASSWORD=?");
 			pStatement.setString(1,userId);
 			pStatement.setString(2,password);
 			result=pStatement.executeQuery();
@@ -33,12 +34,21 @@
 				
 				HttpSession s= request.getSession(true);
 				s.setAttribute("emp", emp);
-				rd=request.getRequestDispatcher("home.jsp");
+				if(loginType.equals("user"))
+					rd=request.getRequestDispatcher("home.jsp");
+				else{
+					if(persno.charAt(0)=='D')
+						rd=request.getRequestDispatcher("directorHome.jsp");
+					else{
+						s.setAttribute("invalid", 1);
+						rd=request.getRequestDispatcher("login.jsp");
+					}
+				}
 			}
 			else{
 				HttpSession s= request.getSession(true);
 				s.setAttribute("invalid", 1);
-				rd=request.getRequestDispatcher("index.jsp");
+				rd=request.getRequestDispatcher("login.jsp");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -157,12 +157,12 @@ s.setAttribute("add",1);
             alert(e);
         }  
     }  
-</SCRIPT> 
+</script>
 
 
 <div class="card" style="margin: auto; width:90%;height: auto; overflow:auto;">
-	<fieldset style="height: 100%; overflow-y: auto;padding: 20px;">
-		<legend style="font-weight: bold;font-size: large;">Fabrication Visits</legend>
+	<fieldset>
+		<legend>Fabrication Visits</legend>
 		<div style="margin-bottom: 10px;">
             <form action="home.jsp" method="post">
 			<table class="tab" id="dataTable" style="width:100%;">
@@ -175,11 +175,12 @@ s.setAttribute("add",1);
                         <th></th>
 					</tr>
 				</thead>
-				<tbody style="overflow-y: auto;max-height: 150px;">
+				<tbody id="dataTable">
+                    <tr>
 					<td>1</td>
-                    <td><input type="text" value="" name="name1"></td>
-                    <td><input type="date" value="" name="date1"></td>
-                    <td><input type="text" value="" name="purpose1"></td>
+                    <td><input type="text" required value="" name="name1"></td>
+                    <td><input type="date" required value="" name="date1"></td>
+                    <td><input type="text" required value="" name="purpose1"></td>
                     <td><input type="button" class="del" name="button1" value="Delete" onclick="removeRow('button1')"></td>
 				</tbody>
 			</table>

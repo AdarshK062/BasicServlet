@@ -284,8 +284,8 @@ int i=1,j=1;
 </div>
 
 <div class="card" id="1" style="width:81%;height: auto; overflow-y:auto;max-height:500px; float:left;display:none;">
-	<fieldset style="height: 100%; overflow-y: auto;padding: 20px;">
-		<legend style="font-weight: bold;font-size: large;">Work in Progress</legend>
+	<fieldset>
+		<legend>Work in Progress</legend>
 		<div style="margin-bottom: 10px;">
 			<table class="tab" style="width:100%;">
 				<thead>
@@ -297,7 +297,7 @@ int i=1,j=1;
 						<th>Status</th>
 					</tr>
 				</thead>
-				<tbody style="overflow-y: auto;max-height: 150px;">
+				<tbody>
 					<%while(res!=null && res.next()){ %>
 						<tr>
 							<td><%=i %></td>
@@ -333,8 +333,8 @@ int i=1,j=1;
 
 
 <div class="card" id="2" style="width:81%;height: auto; overflow-y:auto;max-height:500px; float:left;display:none;">
-	<fieldset style="height: 100%; overflow-y: auto;padding: 20px;">
-		<legend style="font-weight: bold;font-size: large;">Visits to Fabrication Agencies</legend>
+	<fieldset>
+		<legend>Visits to Fabrication Agencies</legend>
 		<div style="margin-bottom: 10px;">
 			<table class="tab" style="width:100%;">
 				<thead>
@@ -345,7 +345,7 @@ int i=1,j=1;
 						<th>Purpose</th>
 					</tr>
 				</thead>
-				<tbody style="overflow-y: auto;max-height: 150px;">
+				<tbody>
 					<%while(res1!=null && res1.next()){ %>
 						<tr>
 							<td><%=j%></td>
@@ -380,8 +380,8 @@ int i=1,j=1;
 
 
 <div class="card" style="width:81%;height: auto; overflow-y:auto;max-height:500px; float:left;">
-	<fieldset style="height: 100%; overflow-y: auto;padding: 20px;">
-		<legend style="font-weight: bold;font-size: large;">Options</legend>
+	<fieldset>
+		<legend>Options</legend>
 		<div style="margin-bottom: 10px;">
 			<ul>
 				<li><button onclick="options('1')">Details of work in Progress</button></li>

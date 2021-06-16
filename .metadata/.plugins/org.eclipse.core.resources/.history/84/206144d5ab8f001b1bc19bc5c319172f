@@ -1,8 +1,0 @@
-package BasicServlet;
-
-public class Employee {
-	String persno,name,designation,division;
-	public Employee(String persno,String name,String designation,String division){
-		
-	}
-}

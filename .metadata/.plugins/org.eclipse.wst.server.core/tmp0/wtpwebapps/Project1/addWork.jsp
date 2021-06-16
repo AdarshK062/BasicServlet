@@ -178,8 +178,8 @@ s.setAttribute("add",1);
     }  
 </script> 
 <div class="card" style="margin: auto; width:90%;height: auto; overflow:auto; ">
-	<fieldset style="height: 100%; overflow-y: auto;padding: 20px;">
-		<legend style="font-weight: bold;font-size: large;">Work in Progress</legend>
+	<fieldset>
+		<legend>Work in Progress</legend>
 		<div style="margin-bottom: 10px;">
             <form action="home.jsp" method="post">
 			<table class="tab" id="dataTable" style="width:100%;">
@@ -195,14 +195,15 @@ s.setAttribute("add",1);
                         <th></th>
 					</tr>
 				</thead>
-				<tbody style="overflow-y: auto;max-height: 150px;">
+				<tbody id="dataTable">
+                    <tr>
 					<td>1</td>
-                    <td><input type="text" value="" name="projectId1"></td>
-                    <td><input type="text" value="" name="projectName1"></td>
-                    <td><input type="text" value="" name="projectDesc1"></td>
-                    <td><input type="date" value="" name="WPDate1"></td>
-                    <td><input type="text" value="" name="status1"></td>
-                    <td><input type="date" value="" name="PDC1"></td>
+                    <td><input type="text" required value="" name="projectId1"></td>
+                    <td><input type="text" required value="" name="projectName1"></td>
+                    <td><input type="text" required value="" name="projectDesc1"></td>
+                    <td><input type="date" required value="" name="WPDate1"></td>
+                    <td><input type="text" required value="" name="status1"></td>
+                    <td><input type="date" required value="" name="PDC1"></td>
                     <td><input type="button" name="button1" value="Delete" onclick="removeRow('button1')"></td>
 				</tbody>
 			</table>
